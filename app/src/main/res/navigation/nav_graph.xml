@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.machinelearning.fragment.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_MLOCRFragment2"
+            app:destination="@id/MLOCRFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLSmartReplyFragment"
+            app:destination="@id/MLSmartReplyFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLLandmarkRecognitionFragment"
+            app:destination="@id/MLLandmarkRecognitionFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLImageLabelingFragment"
+            app:destination="@id/MLImageLabelingFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLAutoMLVisionEdge"
+            app:destination="@id/MLAutoMLVisionEdge" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLLanguageIdFragment"
+            app:destination="@id/MLLanguageIdFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLOnDeviceTranslationFragment"
+            app:destination="@id/MLOnDeviceTranslationFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLObjectDetactionAndTrackingFragment"
+            app:destination="@id/MLObjectDetactionAndTrackingFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLBarcodeScanning"
+            app:destination="@id/MLBarcodeScanning" />
+        <action
+            android:id="@+id/action_mainFragment_to_MLFaceDetactionFragment"
+            app:destination="@id/MLFaceDetactionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/MLOCRFragment"
+        android:name="com.example.machinelearning.fragment.MLOCRFragment"
+        android:label="fragment_mlocr"
+        tools:layout="@layout/fragment_mlocr" />
+    <fragment
+        android:id="@+id/MLFaceDetactionFragment"
+        android:name="com.example.machinelearning.MLFaceDetactionFragment"
+        android:label="fragment_mlface_detaction"
+        tools:layout="@layout/fragment_mlface_detaction" />
+    <fragment
+        android:id="@+id/MLObjectDetactionAndTrackingFragment"
+        android:name="com.example.machinelearning.fragment.MLObjectDetactionAndTrackingFragment"
+        android:label="fragment_mlobject_detaction_and_tracking"
+        tools:layout="@layout/fragment_mlobject_detaction_and_tracking" />
+    <fragment
+        android:id="@+id/MLImageLabelingFragment"
+        android:name="com.example.machinelearning.fragment.MLImageLabelingFragment"
+        android:label="fragment_mlimage_labeling"
+        tools:layout="@layout/fragment_mlimage_labeling" />
+    <fragment
+        android:id="@+id/MLAutoMLVisionEdge"
+        android:name="com.example.machinelearning.fragment.MLAutoMLVisionEdge"
+        android:label="fragment_mlauto_mlvision_edge"
+        tools:layout="@layout/fragment_mlauto_mlvision_edge" />
+    <fragment
+        android:id="@+id/MLBarcodeScanning"
+        android:name="com.example.machinelearning.fragment.MLBarcodeScanning"
+        android:label="fragment_mlbarcode_scanning"
+        tools:layout="@layout/fragment_mlbarcode_scanning" />
+    <fragment
+        android:id="@+id/MLLandmarkRecognitionFragment"
+        android:name="com.example.machinelearning.fragment.MLLandmarkRecognitionFragment"
+        android:label="fragment_mllandmark_recognition"
+        tools:layout="@layout/fragment_mllandmark_recognition" />
+    <fragment
+        android:id="@+id/MLLanguageIdFragment"
+        android:name="com.example.machinelearning.fragment.MLLanguageIdFragment"
+        android:label="fragment_mllanguage_id"
+        tools:layout="@layout/fragment_mllanguage_id" />
+    <fragment
+        android:id="@+id/MLOnDeviceTranslationFragment"
+        android:name="com.example.machinelearning.fragment.MLOnDeviceTranslationFragment"
+        android:label="fragment_mlon_device_translation"
+        tools:layout="@layout/fragment_mlon_device_translation" />
+    <fragment
+        android:id="@+id/MLSmartReplyFragment"
+        android:name="com.example.machinelearning.fragment.MLSmartReplyFragment"
+        android:label="fragment_mlsmart_reply"
+        tools:layout="@layout/fragment_mlsmart_reply" />
+</navigation>

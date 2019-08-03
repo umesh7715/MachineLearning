@@ -4,9 +4,11 @@ import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.Navigation.findNavController
+import com.example.machinelearning.`interface`.OnFragmentInteractionListener
+import com.example.machinelearning.fragment.MLOCRFragment
 import com.example.machinelearning.fragment.MainFragment
 
-class MainActivity : AppCompatActivity(), MainFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
 
     override fun onFragmentInteraction(uri: Uri) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

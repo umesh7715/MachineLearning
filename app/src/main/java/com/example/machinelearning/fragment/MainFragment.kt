@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import com.example.machinelearning.R
+import com.example.machinelearning.`interface`.OnFragmentInteractionListener
 import com.example.machinelearning.adapter.ListAdapter
 import com.example.machinelearning.model.MLFunctionality
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -109,21 +110,6 @@ class MainFragment : Fragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
 
     companion object {
         /**

@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/contentView"
     tools:context=".fragment.MLOCRFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <TextureView
+        android:id="@+id/cameraTextureView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/cameraCaptureImageButton"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/cardview_dark_background"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/capture"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

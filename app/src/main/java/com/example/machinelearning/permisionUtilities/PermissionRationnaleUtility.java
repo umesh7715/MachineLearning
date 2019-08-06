@@ -3,7 +3,7 @@ package com.example.machinelearning.permisionUtilities;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.machinelearning.R;
 import com.karumi.dexter.PermissionToken;

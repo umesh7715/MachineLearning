@@ -12,4 +12,5 @@
     <string name="permission_needed_titile">Permission required</string>
     <string name="storage_permission_required">This permission is required to download the data</string>
     <string name="audio_permission_required">This permission is required to record the audio</string>
+    <string name="capture">Capture</string>
 </resources>

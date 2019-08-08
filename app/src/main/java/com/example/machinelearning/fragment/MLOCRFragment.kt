@@ -7,15 +7,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
 import android.util.Size
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.camera.core.*
+import androidx.fragment.app.Fragment
 import com.example.machinelearning.R
 import com.example.machinelearning.`interface`.OnFragmentInteractionListener
 import com.example.machinelearning.permisionUtilities.PermissionCallbacks
@@ -26,7 +25,6 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.karumi.dexter.listener.DexterError
 import kotlinx.android.synthetic.main.fragment_mlocr.*
 import pl.aprilapps.easyphotopicker.EasyImage
-import pl.aprilapps.easyphotopicker.EasyImageConfig
 import java.io.File
 
 
@@ -129,6 +127,7 @@ class MLOCRFragment : Fragment() {
             }
             CameraUtility(it, cameraTextureView, ::onCapture)
         }
+        cameraUtility?.startCamera()
 
         cameraCaptureImageButton.setOnClickListener {
             cameraUtility?.captureImage()

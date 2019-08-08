@@ -1,12 +1,14 @@
 package com.example.machinelearning
 
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation.findNavController
+import com.appspector.sdk.AppSpector
+import com.bosphere.filelogger.FL
+import com.bosphere.filelogger.FLConfig
+import com.bosphere.filelogger.FLConst
 import com.example.machinelearning.`interface`.OnFragmentInteractionListener
-import com.example.machinelearning.fragment.MLOCRFragment
-import com.example.machinelearning.fragment.MainFragment
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
 
@@ -17,6 +19,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        AppSpector
+                .build(this)
+                .withDefaultMonitors().run("android_OGIzODc4OWMtZGQ3Ni00Mzg3LWI5MjQtNjJiZTM0Y2UxNTVh")
+
     }
 
     override fun onSupportNavigateUp() =

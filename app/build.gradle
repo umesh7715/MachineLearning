@@ -61,9 +61,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision-face-model:18.0.0'
     implementation 'com.google.firebase:firebase-ml-vision-object-detection-model:18.0.0'
 
+    implementation "com.appspector:android-sdk:1.+"
+
+    implementation 'com.github.bosphere.android-filelogger:filelogger:1.0.7'
+
 }
 
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.appspector.sdk'

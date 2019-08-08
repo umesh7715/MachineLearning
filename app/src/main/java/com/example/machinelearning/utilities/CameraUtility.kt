@@ -1,33 +1,33 @@
 package com.example.machinelearning.utilities
 
-import android.app.Activity
 import android.content.ContentValues
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
 import android.util.Size
+import android.view.Surface
 import android.view.TextureView
-import android.widget.Button
 import androidx.camera.core.*
 import androidx.lifecycle.LifecycleOwner
-import kotlinx.android.synthetic.main.fragment_mlocr.*
-import java.io.File
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-import android.graphics.BitmapFactory
-import android.view.Surface
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
+import java.io.File
 
 
-class CameraUtility(activity: LifecycleOwner, _cameraTextureView: TextureView, var onCapture: (bitmap: Bitmap) -> Unit) {
+class CameraUtility(_activity: LifecycleOwner, _cameraTextureView: TextureView, var onCapture: (bitmap: Bitmap) -> Unit) {
 
+    private var imageAnalysisUseCase: ImageAnalysis
+    private var imageCaptureUseCase: ImageCapture
+    private var preview: Preview
     private lateinit var capture: ImageCapture
-    private lateinit var resolution: Size
+    private var resolution: Size
     private var rotation: Int = 0
-    private lateinit var aspectRatio: Rational
+    private var aspectRatio: Rational
     private var lensFacing = CameraX.LensFacing.BACK
     private var cameraTextureView: TextureView = _cameraTextureView
+    private var activity: LifecycleOwner = _activity;
 
     var listener: ((file: File) -> Unit)? = null
 
@@ -36,15 +36,22 @@ class CameraUtility(activity: LifecycleOwner, _cameraTextureView: TextureView, v
         val metrics = DisplayMetrics().also { cameraTextureView.display.getRealMetrics(it) }
 
         aspectRatio = Rational(metrics.widthPixels, metrics.heightPixels)
-        rotation = cameraTextureView.display.rotation
         resolution = Size(metrics.widthPixels, metrics.heightPixels)
+
+        preview = buildPreviewUseCase()
+        imageCaptureUseCase = buildImageCaptureUseCase()
+        imageAnalysisUseCase = buildImageAnalysisUseCase()
+
+
+    }
+
+    fun startCamera() {
 
         CameraX.bindToLifecycle(
                 activity, // Can be an Activity, Fragment or a custom Lifecycle
-                buildPreviewUseCase(),
-                buildImageCaptureUseCase(),
-                buildImageAnalysisUseCase())
+                preview, imageCaptureUseCase, imageAnalysisUseCase)
     }
+
 
     fun buildPreviewUseCase(): Preview {
         val previewConfig = PreviewConfig.Builder()
@@ -57,13 +64,7 @@ class CameraUtility(activity: LifecycleOwner, _cameraTextureView: TextureView, v
         val preview = Preview(previewConfig)
         preview.setOnPreviewOutputUpdateListener { previewOutput ->
             cameraTextureView.surfaceTexture = previewOutput.surfaceTexture
-            rotation = when (cameraTextureView.display.rotation) {
-                Surface.ROTATION_0 -> 0
-                Surface.ROTATION_90 -> 90
-                Surface.ROTATION_180 -> 180
-                Surface.ROTATION_270 -> 270
-                else -> throw IllegalStateException()
-            }
+
         }
 
         return preview
@@ -100,13 +101,28 @@ class CameraUtility(activity: LifecycleOwner, _cameraTextureView: TextureView, v
                 val bmOptions = BitmapFactory.Options()
                 var bitmap = BitmapFactory.decodeFile(file.absolutePath, bmOptions)
 
+                bitmap = rotateImage(bitmap)
+
                 onCapture(bitmap)
 
+                cameraTextureView.lockCanvas()
+
+               // CameraX.unbind(preview)
             }
 
             override fun onError(useCaseError: ImageCapture.UseCaseError, message: String, cause: Throwable?) {
                 // Display error message
                 Log.e(ContentValues.TAG, "Path error")
+            }
+        })
+
+        capture.takePicture(object : ImageCapture.OnImageCapturedListener() {
+            override fun onCaptureSuccess(image: ImageProxy, rotationDegrees: Int) {
+                // Handle image captured
+            }
+
+            override fun onError(useCaseError: ImageCapture.UseCaseError?, message: String?, cause: Throwable?) {
+                // Handle image capture error
             }
         })
     }
@@ -138,6 +154,22 @@ class CameraUtility(activity: LifecycleOwner, _cameraTextureView: TextureView, v
         180 -> FirebaseVisionImageMetadata.ROTATION_180
         270 -> FirebaseVisionImageMetadata.ROTATION_270
         else -> throw Exception("Rotation must be 0, 90, 180, or 270.")
+    }
+
+    fun rotateImage(source: Bitmap): Bitmap {
+        val matrix = Matrix()
+
+        var rotationFloat = when (rotation) {
+            Surface.ROTATION_0 -> 0
+            Surface.ROTATION_90 -> 90
+            Surface.ROTATION_180 -> 180
+            Surface.ROTATION_270 -> 270
+            else -> throw IllegalStateException()
+        }
+
+        matrix.postRotate(rotationFloat.toFloat())
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height,
+                matrix, true)
     }
 
 }

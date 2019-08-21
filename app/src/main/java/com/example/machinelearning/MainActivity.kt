@@ -9,8 +9,11 @@ import com.bosphere.filelogger.FL
 import com.bosphere.filelogger.FLConfig
 import com.bosphere.filelogger.FLConst
 import com.example.machinelearning.`interface`.OnFragmentInteractionListener
+import com.google.firebase.analytics.FirebaseAnalytics
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onFragmentInteraction(uri: Uri) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -23,6 +26,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         AppSpector
                 .build(this)
                 .withDefaultMonitors().run("android_OGIzODc4OWMtZGQ3Ni00Mzg3LWI5MjQtNjJiZTM0Y2UxNTVh")
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
     }
 

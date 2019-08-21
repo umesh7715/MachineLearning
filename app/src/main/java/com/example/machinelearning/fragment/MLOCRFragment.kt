@@ -1,31 +1,23 @@
 package com.example.machinelearning.fragment
 
-import android.Manifest
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
+import android.graphics.*
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.util.Rational
-import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.camera.core.*
 import androidx.fragment.app.Fragment
-import com.example.machinelearning.R
 import com.example.machinelearning.`interface`.OnFragmentInteractionListener
-import com.example.machinelearning.permisionUtilities.PermissionCallbacks
-import com.example.machinelearning.permisionUtilities.PermissionsUtility
-import com.example.machinelearning.utilities.CameraUtility
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
-import com.karumi.dexter.listener.DexterError
 import kotlinx.android.synthetic.main.fragment_mlocr.*
 import pl.aprilapps.easyphotopicker.EasyImage
-import java.io.File
+import java.io.IOException
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -44,16 +36,13 @@ private const val ARG_PARAM2 = "param2"
  */
 class MLOCRFragment : Fragment() {
 
-    private lateinit var resolution: Size
-    private var rotation: Int = 0
-    private lateinit var aspectRatio: Rational
-    private var lensFacing = CameraX.LensFacing.BACK
-
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
     private var easyImage: EasyImage? = null
+    private var filePath: String? = ""
+    private var rotation: Float? = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,110 +50,86 @@ class MLOCRFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        arguments?.let {
+            filePath = MLOCRFragmentArgs.fromBundle(it).filePath
+            rotation = 90f
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mlocr, container, false)
+        return inflater.inflate(com.example.machinelearning.R.layout.fragment_mlocr, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val bmOptions = BitmapFactory.Options()
+        var bitmap = BitmapFactory.decodeFile(filePath, bmOptions)
 
-        /*easyImage = EasyImage.ImageSource()
-                .setChooserTitle("Pick media")
-                .setCopyImagesToPublicGalleryFolder(false)
-                .setChooserType(EasyImageConfig.REQ_TAKE_PICTURE)
-                .setFolderName("EasyImage sample")
-                .allowMultiple(true)
-                .build()*/
+        // Log.e(TAG, "Rotation $rotation")
+        //bitmap = rotateImage(bitmap)
 
-        getPermissions(permissionCallbacks = PermissionCallbacks.Granted {
-            easyImage.runCatching { this }
-        })
+        bitmap = filePath?.let { rotateBitmap(it) }
 
-        val cameraUtility = activity?.let {
-            fun onCapture(bitmap: @ParameterName(name = "bitmap") Bitmap) {
+        val canvas = Canvas(bitmap)
 
-                val image = FirebaseVisionImage.fromBitmap(bitmap)
-                val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
+        val p = Paint()
+        p.style = Paint.Style.STROKE
+        p.isAntiAlias = true
+        p.isFilterBitmap = true
+        p.isDither = true
+        p.color = Color.RED
 
-                detector.processImage(image)
-                        .addOnSuccessListener { result ->
 
-                            val resultText = result.text
-                            Log.e(TAG, " Text $resultText")
-                            for (block in result.textBlocks) {
-                                val blockText = block.text
-                                val blockConfidence = block.confidence
-                                val blockLanguages = block.recognizedLanguages
-                                val blockCornerPoints = block.cornerPoints
-                                val blockFrame = block.boundingBox
-                                for (line in block.lines) {
-                                    val lineText = line.text
-                                    val lineConfidence = line.confidence
-                                    val lineLanguages = line.recognizedLanguages
-                                    val lineCornerPoints = line.cornerPoints
-                                    val lineFrame = line.boundingBox
-                                    for (element in line.elements) {
-                                        val elementText = element.text
-                                        val elementConfidence = element.confidence
-                                        val elementLanguages = element.recognizedLanguages
-                                        val elementCornerPoints = element.cornerPoints
-                                        val elementFrame = element.boundingBox
-                                    }
-                                }
+
+        val image = FirebaseVisionImage.fromBitmap(bitmap)
+        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
+
+        detector.processImage(image)
+                .addOnSuccessListener { result ->
+
+                    val resultText = result.text
+                    Log.e(ContentValues.TAG, " Text $resultText")
+                    for (block in result.textBlocks) {
+                        val blockText = block.text
+                        val blockConfidence = block.confidence
+                        val blockLanguages = block.recognizedLanguages
+                        val blockCornerPoints = block.cornerPoints
+                        val blockFrame = block.boundingBox
+
+
+
+                        for (line in block.lines) {
+                            val lineText = line.text
+                            val lineConfidence = line.confidence
+                            val lineLanguages = line.recognizedLanguages
+                            val lineCornerPoints = line.cornerPoints
+                            val lineFrame = line.boundingBox
+                            canvas.drawRect(lineFrame, p)
+                            for (element in line.elements) {
+                                val elementText = element.text
+                                val elementConfidence = element.confidence
+                                val elementLanguages = element.recognizedLanguages
+                                val elementCornerPoints = element.cornerPoints
+                                val elementFrame = element.boundingBox
+
+
                             }
-
-
                         }
-                        .addOnFailureListener {
+                    }
 
-                        }
+                    IVmlocr.setImageBitmap(bitmap)
 
-            }
-            CameraUtility(it, cameraTextureView, ::onCapture)
-        }
-        cameraUtility?.startCamera()
 
-        cameraCaptureImageButton.setOnClickListener {
-            cameraUtility?.captureImage()
-        }
+                }
+                .addOnFailureListener {
 
+                }
 
     }
-
-
-    private fun getPermissions(permissionCallbacks: PermissionCallbacks.Granted) {
-
-        /**
-         * For Single permission
-         */
-
-        PermissionsUtility(activity, contentView)
-                .addGrantedPermissionCallbacks { permissionCallbacks.onGranted() }
-                .addErrorPermissionCallbacks { this.showError(it) }
-                .createSinglePermissionListener(false, activity!!.getString(R.string.storage_permission_required))
-                .getSinglePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, true, false)
-
-        /**
-         * For multiple permissions
-         */
-        /*List<String> permissions = new ArrayList<>();
-        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        new PermissionsUtility(activity, contentView)
-                .addGrantedPermissionCallbacks(this::downlaodFIle)
-                .addErrorPermissionCallbacks(this::showError)
-                .createAllPermissionsListener()
-                .getAllPermissions(permissions);*/
-    }
-
-    private fun showError(it: DexterError?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
@@ -210,73 +175,55 @@ class MLOCRFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun buildPreviewUseCase(): Preview {
-        val previewConfig = PreviewConfig.Builder()
-                .setTargetAspectRatio(aspectRatio)
-                .setTargetRotation(rotation)
-                .setTargetResolution(resolution)
-                .setLensFacing(lensFacing)
-                .build()
-
-        val preview = Preview(previewConfig)
-        preview.setOnPreviewOutputUpdateListener { previewOutput ->
-            cameraTextureView.surfaceTexture = previewOutput.surfaceTexture
-        }
-
-        return preview
+    fun rotateImage(source: Bitmap): Bitmap {
+        val matrix = Matrix()
+        rotation?.let { matrix.postRotate(it) }
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height,
+                matrix, true)
     }
 
-    fun buildImageAnalysisUseCase(): ImageAnalysis {
-        val analysisConfig = ImageAnalysisConfig.Builder()
-                .setTargetAspectRatio(aspectRatio)
-                .setTargetRotation(rotation)
-                .setTargetResolution(resolution)
-                .setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE)
-                .build()
+    fun rotateBitmap(src: String): Bitmap {
+        val bitmap = BitmapFactory.decodeFile(src)
+        try {
+            val exif = ExifInterface(src)
+            val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
 
-        val analysis = ImageAnalysis(analysisConfig)
-        analysis.setAnalyzer { image, rotationDegrees ->
-            val rect = image.cropRect
-            val format = image.format
-            val width = image.width
-            val height = image.height
-            val planes = image.planes
+            val matrix = Matrix()
+            when (orientation) {
+                ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.setScale(-1f, 1f)
+                ExifInterface.ORIENTATION_ROTATE_180 -> matrix.setRotate(180f)
+                ExifInterface.ORIENTATION_FLIP_VERTICAL -> {
+                    matrix.setRotate(180f)
+                    matrix.postScale(-1f, 1f)
+                }
+                ExifInterface.ORIENTATION_TRANSPOSE -> {
+                    matrix.setRotate(90f)
+                    matrix.postScale(-1f, 1f)
+                }
+                ExifInterface.ORIENTATION_ROTATE_90 -> matrix.setRotate(90f)
+                ExifInterface.ORIENTATION_TRANSVERSE -> {
+                    matrix.setRotate(-90f)
+                    matrix.postScale(-1f, 1f)
+                }
+                ExifInterface.ORIENTATION_ROTATE_270 -> matrix.setRotate(-90f)
+                ExifInterface.ORIENTATION_NORMAL, ExifInterface.ORIENTATION_UNDEFINED -> return bitmap
+                else -> return bitmap
+            }
+
+            try {
+                val oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                bitmap.recycle()
+                return oriented
+            } catch (e: OutOfMemoryError) {
+                e.printStackTrace()
+                return bitmap
+            }
+
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
 
-        return analysis
-    }
-
-    fun buildImageCaptureUseCase(): ImageCapture {
-        val captureConfig = ImageCaptureConfig.Builder()
-                .setTargetAspectRatio(aspectRatio)
-                .setTargetRotation(rotation)
-                .setTargetResolution(resolution)
-                .setFlashMode(FlashMode.OFF)
-                .setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
-                .build()
-
-        val capture = ImageCapture(captureConfig)
-        cameraCaptureImageButton.setOnClickListener {
-            // Create temporary file
-            val fileName = System.currentTimeMillis().toString()
-            val fileFormat = ".jpg"
-            val imageFile = createTempFile(fileName, fileFormat)
-
-            // Store captured image in the temporary file
-            capture.takePicture(imageFile, object : ImageCapture.OnImageSavedListener {
-                override fun onImageSaved(file: File) {
-                    // You may display the image for example using its path file.absolutePath
-                    Log.e(TAG, "Path " + file.absoluteFile)
-                }
-
-                override fun onError(useCaseError: ImageCapture.UseCaseError, message: String, cause: Throwable?) {
-                    // Display error message
-                    Log.e(TAG, "Path error")
-                }
-            })
-        }
-
-        return capture
+        return bitmap
     }
 
 }

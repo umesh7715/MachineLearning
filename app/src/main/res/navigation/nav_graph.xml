@@ -11,41 +11,24 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_mainFragment_to_MLOCRFragment2"
-            app:destination="@id/MLOCRFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLSmartReplyFragment"
-            app:destination="@id/MLSmartReplyFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLLandmarkRecognitionFragment"
-            app:destination="@id/MLLandmarkRecognitionFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLImageLabelingFragment"
-            app:destination="@id/MLImageLabelingFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLAutoMLVisionEdge"
-            app:destination="@id/MLAutoMLVisionEdge" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLLanguageIdFragment"
-            app:destination="@id/MLLanguageIdFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLOnDeviceTranslationFragment"
-            app:destination="@id/MLOnDeviceTranslationFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLObjectDetactionAndTrackingFragment"
-            app:destination="@id/MLObjectDetactionAndTrackingFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLBarcodeScanning"
-            app:destination="@id/MLBarcodeScanning" />
-        <action
-            android:id="@+id/action_mainFragment_to_MLFaceDetactionFragment"
-            app:destination="@id/MLFaceDetactionFragment" />
+            android:id="@+id/action_mainFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/MLOCRFragment"
         android:name="com.example.machinelearning.fragment.MLOCRFragment"
         android:label="fragment_mlocr"
-        tools:layout="@layout/fragment_mlocr" />
+        tools:layout="@layout/fragment_mlocr" >
+        <argument
+            android:name="filePath"
+            app:argType="string" />
+        <argument
+            android:name="rotation"
+            app:argType="float" />
+    </fragment>
     <fragment
         android:id="@+id/MLFaceDetactionFragment"
         android:name="com.example.machinelearning.MLFaceDetactionFragment"
@@ -91,4 +74,43 @@
         android:name="com.example.machinelearning.fragment.MLSmartReplyFragment"
         android:label="fragment_mlsmart_reply"
         tools:layout="@layout/fragment_mlsmart_reply" />
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.example.machinelearning.fragment.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" >
+        <argument
+            android:name="position"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLObjectDetactionAndTrackingFragment"
+            app:destination="@id/MLObjectDetactionAndTrackingFragment" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLBarcodeScanning"
+            app:destination="@id/MLBarcodeScanning" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLSmartReplyFragment"
+            app:destination="@id/MLSmartReplyFragment" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLOCRFragment"
+            app:destination="@id/MLOCRFragment" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLLanguageIdFragment"
+            app:destination="@id/MLLanguageIdFragment" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLAutoMLVisionEdge"
+            app:destination="@id/MLAutoMLVisionEdge" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLOnDeviceTranslationFragment"
+            app:destination="@id/MLOnDeviceTranslationFragment" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLLandmarkRecognitionFragment"
+            app:destination="@id/MLLandmarkRecognitionFragment" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLImageLabelingFragment"
+            app:destination="@id/MLImageLabelingFragment" />
+        <action
+            android:id="@+id/action_cameraFragment_to_MLFaceDetactionFragment"
+            app:destination="@id/MLFaceDetactionFragment" />
+    </fragment>
 </navigation>

@@ -3,13 +3,13 @@ package com.example.machinelearning.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.machinelearning.R
 import com.example.machinelearning.`interface`.OnFragmentInteractionListener
 import com.example.machinelearning.adapter.ListAdapter
@@ -72,19 +72,7 @@ class MainFragment : Fragment() {
             adapter = ListAdapter(mlFunctionlityList) { mlFunctionality: MLFunctionality, position: Int ->
                 Log.e("MyActivity", "Clicked on item  ${mlFunctionality.title} at position $position")
 
-                val action = when (position) {
-                    0 -> MainFragmentDirections.actionMainFragmentToMLOCRFragment2()
-                    1 -> MainFragmentDirections.actionMainFragmentToMLFaceDetactionFragment()
-                    2 -> MainFragmentDirections.actionMainFragmentToMLObjectDetactionAndTrackingFragment()
-                    3 -> MainFragmentDirections.actionMainFragmentToMLImageLabelingFragment()
-                    4 -> MainFragmentDirections.actionMainFragmentToMLAutoMLVisionEdge()
-                    5 -> MainFragmentDirections.actionMainFragmentToMLBarcodeScanning()
-                    6 -> MainFragmentDirections.actionMainFragmentToMLLandmarkRecognitionFragment()
-                    7 -> MainFragmentDirections.actionMainFragmentToMLLanguageIdFragment()
-                    8 -> MainFragmentDirections.actionMainFragmentToMLOnDeviceTranslationFragment()
-                    9 -> MainFragmentDirections.actionMainFragmentToMLSmartReplyFragment()
-                    else -> MainFragmentDirections.actionMainFragmentToMLOCRFragment2()
-                }
+                val action = MainFragmentDirections.actionMainFragmentToCameraFragment(position)
 
                 findNavController().navigate(action)
             }

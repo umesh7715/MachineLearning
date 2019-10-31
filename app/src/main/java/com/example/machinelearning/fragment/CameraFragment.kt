@@ -70,7 +70,7 @@ class CameraFragment : Fragment() {
                 val action = when (position) {
                     0 -> CameraFragmentDirections.actionCameraFragmentToMLOCRFragment(filePath, rotation)
                     1 -> CameraFragmentDirections.actionCameraFragmentToMLFaceDetactionFragment()
-                    2 -> CameraFragmentDirections.actionCameraFragmentToMLObjectDetactionAndTrackingFragment()
+                    2 -> CameraFragmentDirections.actionCameraFragmentToMLObjectDetactionAndTrackingFragment(filePath, rotation)
                     3 -> CameraFragmentDirections.actionCameraFragmentToMLImageLabelingFragment()
                     4 -> CameraFragmentDirections.actionCameraFragmentToMLAutoMLVisionEdge()
                     5 -> CameraFragmentDirections.actionCameraFragmentToMLBarcodeScanning()

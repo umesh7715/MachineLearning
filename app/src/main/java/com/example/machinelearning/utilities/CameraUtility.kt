@@ -1,6 +1,10 @@
 package com.example.machinelearning.utilities
 
 import android.content.ContentValues
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
@@ -12,6 +16,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import java.io.File
+import java.io.IOException
 
 
 class CameraUtility(_activity: LifecycleOwner, _cameraTextureView: TextureView, var onCapture: (filePath: String, rotation: Float) -> Unit) {
@@ -161,6 +166,54 @@ class CameraUtility(_activity: LifecycleOwner, _cameraTextureView: TextureView, 
         Surface.ROTATION_270 -> 270f
         else -> throw IllegalStateException()
 
+    }
+
+    companion object {
+        fun a(): Int = 1
+
+        fun rotateBitmap(src: String): Bitmap {
+            val bitmap = BitmapFactory.decodeFile(src)
+            try {
+                val exif = ExifInterface(src)
+                val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+
+                val matrix = Matrix()
+                when (orientation) {
+                    ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.setScale(-1f, 1f)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> matrix.setRotate(180f)
+                    ExifInterface.ORIENTATION_FLIP_VERTICAL -> {
+                        matrix.setRotate(180f)
+                        matrix.postScale(-1f, 1f)
+                    }
+                    ExifInterface.ORIENTATION_TRANSPOSE -> {
+                        matrix.setRotate(90f)
+                        matrix.postScale(-1f, 1f)
+                    }
+                    ExifInterface.ORIENTATION_ROTATE_90 -> matrix.setRotate(90f)
+                    ExifInterface.ORIENTATION_TRANSVERSE -> {
+                        matrix.setRotate(-90f)
+                        matrix.postScale(-1f, 1f)
+                    }
+                    ExifInterface.ORIENTATION_ROTATE_270 -> matrix.setRotate(-90f)
+                    ExifInterface.ORIENTATION_NORMAL, ExifInterface.ORIENTATION_UNDEFINED -> return bitmap
+                    else -> return bitmap
+                }
+
+                try {
+                    val oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                    bitmap.recycle()
+                    return oriented
+                } catch (e: OutOfMemoryError) {
+                    e.printStackTrace()
+                    return bitmap
+                }
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            return bitmap
+        }
     }
 
 

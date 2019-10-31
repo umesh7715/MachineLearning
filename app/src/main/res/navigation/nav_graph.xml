@@ -38,7 +38,14 @@
         android:id="@+id/MLObjectDetactionAndTrackingFragment"
         android:name="com.example.machinelearning.fragment.MLObjectDetactionAndTrackingFragment"
         android:label="fragment_mlobject_detaction_and_tracking"
-        tools:layout="@layout/fragment_mlobject_detaction_and_tracking" />
+        tools:layout="@layout/fragment_mlobject_detaction_and_tracking" >
+        <argument
+            android:name="filePath"
+            app:argType="string" />
+        <argument
+            android:name="rotation"
+            app:argType="float" />
+    </fragment>
     <fragment
         android:id="@+id/MLImageLabelingFragment"
         android:name="com.example.machinelearning.fragment.MLImageLabelingFragment"
